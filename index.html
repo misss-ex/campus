@@ -204,6 +204,12 @@
       <button class="swatch" data-v="mint"><i style="background:#7fe0b5"></i>Мята</button>
       <button class="swatch" data-v="lavender"><i style="background:#c4b3ff"></i>Лаванда</button>
     </div>
+    <div class="label">Помощь</div>
+    <button class="group-card" id="set-report">
+      <span class="avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span>
+      <span class="gt"><b>Ошибка в расписании?</b><span>Напишите — мы поправим</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
     <div class="about" id="set-version"></div>
   </section>
 
@@ -402,6 +408,15 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen)
 $('sheet-list').onclick = async e => {
   const b = e.target.closest('[data-g]'); if (!b) return;
   await selectGroup(b.dataset.g); prefs.set('group', st.group); haptic('success'); closeSheet(); render();
+};
+
+// Сообщить об ошибке: открываем чат бота, он примет описание и передаст модераторам
+const BOT = 'stgmu_helpbot';
+$('set-report').onclick = () => {
+  const slug = groupInfo(st.group)?.slug;
+  const link = `https://t.me/${BOT}?start=report${slug ? '_' + slug : ''}`;
+  haptic('sel');
+  if (tg?.openTelegramLink) tg.openTelegramLink(link); else window.open(link, '_blank');
 };
 
 async function selectGroup(id) { st.data = await S.loadGroup(id); st.group = st.data.group; st.selDate = null; }
