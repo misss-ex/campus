@@ -125,6 +125,20 @@
   .swatch i { width: 20px; height: 20px; border-radius: 50%; }
   .swatch.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .about { margin-top: 26px; text-align: center; font-size: 12px; color: var(--faint); }
+  .cards { display: grid; gap: 8px; }
+  .favs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fav { display: inline-flex; align-items: center; height: 36px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 13px; font-weight: 700; }
+  .fav > button { height: 100%; padding: 0 12px; }
+  .fav > .x { padding: 0 12px 0 2px; color: var(--faint); font-size: 16px; }
+  .fav.sel { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .fav.add { padding: 0 14px; color: var(--muted); border-style: dashed; }
+  .fb-text { width: 100%; min-height: 140px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--card); color: var(--text); font: inherit; font-size: 15px; resize: vertical; outline: none; }
+  .fb-text:focus { border-color: var(--accent); }
+  .fb-hint { font-size: 13px; color: var(--muted); margin: 0 0 10px; line-height: 1.45; }
+  .fb-err { font-size: 13px; color: var(--warn); margin-top: 8px; }
+  .btn { width: 100%; height: 48px; margin-top: 12px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 15px; }
+  .btn:disabled { opacity: .5; }
+  .toast { position: fixed; left: 16px; right: 16px; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 60; max-width: 420px; margin: 0 auto; padding: 12px 16px; border-radius: 14px; background: var(--text); color: var(--bg); font-weight: 700; font-size: 14px; text-align: center; box-shadow: var(--shadow); animation: fade .2s ease; }
 
   /* sheet */
   .scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); backdrop-filter: blur(2px); z-index: 40; opacity: 0; transition: opacity .2s; }
@@ -197,6 +211,8 @@
       <span class="gt"><b id="set-g"></b><span id="set-gs"></span></span>
       <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
     </button>
+    <div class="label">Избранные группы</div>
+    <div class="favs" id="set-favs"></div>
     <div class="label">Тема</div>
     <div class="seg" id="set-theme"><button data-v="dark">Тёмная</button><button data-v="light">Светлая</button><button data-v="telegram">Авто</button></div>
     <div class="label">Акцент</div>
@@ -204,12 +220,25 @@
       <button class="swatch" data-v="mint"><i style="background:#7fe0b5"></i>Мята</button>
       <button class="swatch" data-v="lavender"><i style="background:#c4b3ff"></i>Лаванда</button>
     </div>
-    <div class="label">Помощь</div>
-    <button class="group-card" id="set-report">
-      <span class="avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span>
-      <span class="gt"><b>Ошибка в расписании?</b><span>Напишите — мы поправим</span></span>
+    <div class="label">Поделиться</div>
+    <button class="group-card" id="set-share">
+      <span class="avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></span>
+      <span class="gt"><b>Расписание группы</b><span id="set-share-s">Отправить ссылку одногруппникам</span></span>
       <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
     </button>
+    <div class="label">Помощь</div>
+    <div class="cards">
+      <button class="group-card" data-fb="report">
+        <span class="avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span>
+        <span class="gt"><b>Ошибка в расписании?</b><span>Напишите — мы поправим</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="group-card" data-fb="idea">
+        <span class="avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/></svg></span>
+        <span class="gt"><b>Идеи для реализации</b><span>Чего не хватает в приложении?</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
     <div class="about" id="set-version"></div>
   </section>
 
@@ -222,10 +251,23 @@
     <div class="grabber"></div>
     <div class="sheet-title"><b id="sheet-t">Выбор группы</b><button class="icon-btn" id="sheet-close" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="sheet-q" type="search" placeholder="Номер группы, например КП-101" autocomplete="off"></label>
+    <div class="tabs-row" id="sheet-favs"></div>
     <div class="tabs-row" id="sheet-fac"></div>
     <div class="tabs-row" id="sheet-course"></div>
   </div>
   <div class="sheet-body" id="sheet-list"></div>
+</div>
+<div class="sheet" id="fb" role="dialog" aria-modal="true" aria-labelledby="fb-t" hidden>
+  <div class="sheet-head">
+    <div class="grabber"></div>
+    <div class="sheet-title"><b id="fb-t"></b><button class="icon-btn" id="fb-close" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  </div>
+  <div class="sheet-body">
+    <p class="fb-hint" id="fb-hint"></p>
+    <textarea class="fb-text" id="fb-text" maxlength="2000"></textarea>
+    <div class="fb-err" id="fb-err" hidden></div>
+    <button class="btn" id="fb-send">Отправить</button>
+  </div>
 </div>
 
 <nav class="tabs"><div class="in">
@@ -238,6 +280,7 @@
 import { Schedule, prefs, moscowNow, formatDayTitle, formatMonth, addDays, mondayOf, studyWeek } from './schedule.js';
 
 const tg = window.Telegram?.WebApp;
+const BOT = 'stgmu_helpbot';
 try { tg?.ready(); tg?.expand(); } catch {}
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -247,7 +290,7 @@ const USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const haptic = t => { try { t === 'sel' ? tg?.HapticFeedback?.selectionChanged() : tg?.HapticFeedback?.notificationOccurred(t); } catch {} };
 
 const S = new Schedule({ baseUrl: './data' });
-const st = { view: 'now', group: null, data: null, selDate: null, theme: 'dark', accent: 'mint' };
+const st = { view: 'now', group: null, data: null, selDate: null, theme: 'dark', accent: 'mint', favs: [] };
 
 function applyTheme() {
   let t = st.theme;
@@ -267,7 +310,7 @@ function go(view) {
   try { view === 'now' ? tg?.BackButton?.hide() : tg?.BackButton?.show(); } catch {}
   window.scrollTo(0, 0);
 }
-try { tg?.BackButton?.onClick(() => sheetOpen ? closeSheet() : go('now')); } catch {}
+try { tg?.BackButton?.onClick(() => fbOpen ? closeFb() : sheetOpen ? closeSheet() : go('now')); } catch {}
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-go]'); if (b) { haptic('sel'); go(b.dataset.go); }
   if (e.target.closest('[data-open-sheet]')) openSheet();
@@ -358,15 +401,20 @@ function renderSettings() {
   $('set-gs').textContent = g ? `${g.faculty_name} · ${g.course} курс${g.stream ? ', ' + g.stream + ' поток' : ''}` : 'Нажмите, чтобы выбрать';
   document.querySelectorAll('#set-theme button').forEach(b => b.classList.toggle('sel', b.dataset.v === st.theme));
   document.querySelectorAll('#set-accent button').forEach(b => b.classList.toggle('sel', b.dataset.v === st.accent));
+  $('set-share-s').textContent = g ? `Отправить ссылку на ${g.id} одногруппникам` : 'Отправить ссылку одногруппникам';
+  $('set-favs').innerHTML = st.favs.map(id => `<span class="fav${id === st.group ? ' sel' : ''}"><button data-fav="${esc(id)}">${esc(id)}</button><button class="x" data-unfav="${esc(id)}" aria-label="Убрать ${esc(id)}">×</button></span>`).join('')
+    + (st.favs.length < MAX_FAVS ? `<button class="fav add" data-addfav>+ Добавить</button>` : '');
   $('set-version').textContent = `${S.index.semester.title} · данные от ${S.index.generated_at.slice(8, 10)}.${S.index.generated_at.slice(5, 7)}`;
 }
 $('set-theme').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; st.theme = b.dataset.v; prefs.set('theme', st.theme); applyTheme(); haptic('sel'); renderSettings(); };
 $('set-accent').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; st.accent = b.dataset.v; prefs.set('accent', st.accent); applyTheme(); haptic('sel'); renderSettings(); };
 
 // ---------- выбор группы (нижняя панель)
-const sh = { fac: null, course: null };
+const sh = { fac: null, course: null, mode: 'pick' };  // mode: pick — выбрать свою группу, fav — добавить в избранное
 let sheetOpen = false;
-function openSheet() {
+function openSheet(mode = 'pick') {
+  sh.mode = mode;
+  $('sheet-t').textContent = mode === 'fav' ? 'Добавить в избранное' : 'Выбор группы';
   const g = groupInfo(st.group);
   sh.fac = g?.faculty || S.index.faculties[0].id; sh.course = g?.course ?? null;
   $('sheet-q').value = '';
@@ -384,6 +432,9 @@ function renderSheet() {
   const q = $('sheet-q').value.trim().toLowerCase().replace(/[\s\-]/g, '');
   const facs = S.index.faculties;
   $('sheet-fac').hidden = $('sheet-course').hidden = !!q;
+  const favs = sh.mode === 'pick' ? st.favs.filter(groupInfo) : [];
+  $('sheet-favs').hidden = !!q || !favs.length;
+  $('sheet-favs').innerHTML = favs.map(id => `<button class="pill${id === st.group ? ' sel' : ''}" data-g="${esc(id)}">★ ${esc(id)}</button>`).join('');
   $('sheet-fac').innerHTML = facs.map(f => `<button class="pill${f.id === sh.fac ? ' sel' : ''}" data-f="${f.id}">${esc(f.name)}</button>`).join('');
   const fac = facs.find(f => f.id === sh.fac);
   const courses = [...new Set(fac.courses.map(c => c.course))];
@@ -403,20 +454,90 @@ $('sheet-fac').onclick = e => { const b = e.target.closest('[data-f]'); if (b) {
 $('sheet-course').onclick = e => { const b = e.target.closest('[data-c]'); if (b) { sh.course = +b.dataset.c; haptic('sel'); renderSheet(); } };
 $('sheet-q').oninput = renderSheet;
 $('sheet-close').onclick = closeSheet;
-$('scrim').onclick = closeSheet;
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen) closeSheet(); });
-$('sheet-list').onclick = async e => {
+$('scrim').onclick = () => fbOpen ? closeFb() : closeSheet();
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (fbOpen) closeFb(); else if (sheetOpen) closeSheet(); });
+async function pickGroup(e) {
   const b = e.target.closest('[data-g]'); if (!b) return;
+  if (sh.mode === 'fav') { addFav(b.dataset.g); haptic('success'); closeSheet(); return; }
   await selectGroup(b.dataset.g); prefs.set('group', st.group); haptic('success'); closeSheet(); render();
+}
+$('sheet-list').onclick = pickGroup;
+$('sheet-favs').onclick = pickGroup;
+
+// ---------- избранные группы: быстрое переключение (хранятся в CloudStorage, как тема и группа)
+const MAX_FAVS = 6;
+function saveFavs() { prefs.set('favs', JSON.stringify(st.favs)); renderSettings(); }
+function addFav(id) { if (!st.favs.includes(id) && st.favs.length < MAX_FAVS) { st.favs.push(id); saveFavs(); } }
+$('set-favs').onclick = async e => {
+  const un = e.target.closest('[data-unfav]');
+  if (un) { st.favs = st.favs.filter(x => x !== un.dataset.unfav); haptic('sel'); saveFavs(); return; }
+  if (e.target.closest('[data-addfav]')) { openSheet('fav'); return; }
+  const f = e.target.closest('[data-fav]');
+  if (f && f.dataset.fav !== st.group) { await selectGroup(f.dataset.fav); prefs.set('group', st.group); haptic('success'); render(); }
 };
 
-// Сообщить об ошибке: открываем чат бота, он примет описание и передаст модераторам
-const BOT = 'stgmu_helpbot';
-$('set-report').onclick = () => {
-  const slug = groupInfo(st.group)?.slug;
-  const link = `https://t.me/${BOT}?start=report${slug ? '_' + slug : ''}`;
+// ---------- поделиться: ссылка открывает Mini App сразу на этой группе
+$('set-share').onclick = () => {
+  const g = groupInfo(st.group); if (!g) return;
+  const url = `https://t.me/${BOT}/app?startapp=${g.slug}`;
+  const share = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Расписание группы ${g.id}`)}`;
   haptic('sel');
+  if (tg?.openTelegramLink) tg.openTelegramLink(share); else window.open(share, '_blank');
+};
+
+// ---------- ошибка в расписании / идея: форма внутри приложения, отправка на сервер бота.
+// Сервер проверяет подпись initData, сохраняет заявку и пересылает модераторам.
+const FEEDBACK_API = '';  // напр. 'https://bot.example.ru/api/feedback'; пока пусто — карточки ведут в чат бота
+const FB = {
+  report: { title: 'Ошибка в расписании', hint: 'Укажите дату или день недели, время пары и что не так. Группа подставится сама.', ph: 'Например: чт 05.11, 11:00 — нет физкультуры' },
+  idea: { title: 'Идея для приложения', hint: 'Чего не хватает? Что было бы удобно? Все идеи читаем.', ph: 'Например: напоминание за 10 минут до пары' },
+};
+let fbOpen = false, fbKind = 'report';
+function openFb(kind) {
+  fbKind = kind; const c = FB[kind];
+  $('fb-t').textContent = c.title; $('fb-hint').textContent = c.hint; $('fb-text').placeholder = c.ph;
+  $('fb-err').hidden = true; $('fb-send').disabled = false;
+  $('scrim').hidden = $('fb').hidden = false;
+  requestAnimationFrame(() => { $('scrim').classList.add('open'); $('fb').classList.add('open'); });
+  fbOpen = true;
+  try { tg?.BackButton?.show(); } catch {}
+  setTimeout(() => $('fb-text').focus(), 300);
+}
+function closeFb() {
+  $('scrim').classList.remove('open'); $('fb').classList.remove('open'); fbOpen = false;
+  setTimeout(() => { if (!fbOpen && !sheetOpen) { $('scrim').hidden = $('fb').hidden = true; } }, 280);
+  try { if (st.view === 'now') tg?.BackButton?.hide(); } catch {}
+}
+function toast(text) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = text;
+  document.body.append(t); setTimeout(() => t.remove(), 3500);
+}
+function openBotFallback(kind) {  // временно, пока у бота нет публичного адреса: заявка через чат бота
+  const slug = groupInfo(st.group)?.slug;
+  const link = `https://t.me/${BOT}?start=${kind}${slug && kind === 'report' ? '_' + slug : ''}`;
   if (tg?.openTelegramLink) tg.openTelegramLink(link); else window.open(link, '_blank');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-fb]'); if (!b) return;
+  haptic('sel'); FEEDBACK_API ? openFb(b.dataset.fb) : openBotFallback(b.dataset.fb);
+});
+$('fb-close').onclick = closeFb;
+$('fb-send').onclick = async () => {
+  const text = $('fb-text').value.trim();
+  const err = m => { $('fb-err').textContent = m; $('fb-err').hidden = false; haptic('error'); };
+  if (text.length < 5) return err('Напишите чуть подробнее');
+  const slug = groupInfo(st.group)?.slug || '';
+  $('fb-send').disabled = true;
+  try {
+    const r = await fetch(FEEDBACK_API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: fbKind, text, group: slug, initData: tg?.initData || '' }) });
+    const res = await r.json().catch(() => ({}));
+    if (!r.ok || !res.ok) throw new Error(res.error || r.status);
+    $('fb-text').value = ''; closeFb(); haptic('success');
+    toast(fbKind === 'report' ? `Спасибо! Заявка №${res.id} принята` : 'Спасибо за идею!');
+  } catch {
+    $('fb-send').disabled = false; err('Не получилось отправить. Проверьте интернет и попробуйте ещё раз');
+  }
 };
 
 async function selectGroup(id) { st.data = await S.loadGroup(id); st.group = st.data.group; st.selDate = null; }
@@ -424,7 +545,8 @@ async function selectGroup(id) { st.data = await S.loadGroup(id); st.group = st.
 (async () => {
   try {
     await S.loadIndex();
-    const [g, theme, accent] = await Promise.all([prefs.get('group'), prefs.get('theme'), prefs.get('accent')]);
+    const [g, theme, accent, favs] = await Promise.all([prefs.get('group'), prefs.get('theme'), prefs.get('accent'), prefs.get('favs')]);
+    try { st.favs = (JSON.parse(favs || '[]') || []).filter(groupInfo).slice(0, MAX_FAVS); } catch { st.favs = []; }
     st.theme = theme || 'dark'; st.accent = accent || 'mint'; applyTheme();
     const start = tg?.initDataUnsafe?.start_param || new URLSearchParams(location.search).get('group');
     let pick = (start && S.findGroup(start)?.id) || (g && groupInfo(g) ? g : null);
