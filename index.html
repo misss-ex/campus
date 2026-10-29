@@ -176,6 +176,8 @@
   nav.tabs button svg { width: 21px; height: 21px; }
   nav.tabs button.sel { background: var(--accent-soft); color: var(--accent); }
   [hidden] { display: none !important; }
+  /* тестовая копия (campus-dev или локально) — метка, чтобы не перепутать с рабочей */
+  .dev-badge { position: fixed; z-index: 100; left: 50%; transform: translateX(-50%); top: calc(6px + var(--tg-safe-area-inset-top, 0px)); padding: 2px 10px; border-radius: 999px; background: #f3c278; color: #241a06; font-size: 11px; font-weight: 800; letter-spacing: .08em; pointer-events: none; }
   .fade { animation: fade .25s ease; }
   @keyframes fade { from { opacity: 0; transform: translateY(4px); } }
   @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
@@ -299,6 +301,7 @@ try {
   if (mobile && tg.isVersionAtLeast('8.0') && !tg.isFullscreen) tg.requestFullscreen();
   markFs();
 } catch {}
+if (/campus-dev|localhost|127\.0\.0\.1/.test(location.href)) document.body.insertAdjacentHTML('beforeend', '<div class="dev-badge">ТЕСТ</div>');
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
