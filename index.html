@@ -290,12 +290,13 @@ const BOT = 'stgmu_helpbot';
 try { tg?.ready(); tg?.expand(); } catch {}
 // на телефоне — на весь экран, без шапки Telegram; на компьютере остаётся обычное окно
 const markFs = () => document.documentElement.classList.toggle('fs', !!tg?.isFullscreen);
+const mobile = ['ios', 'android', 'android_x'].includes(tg?.platform);
+// чтобы свайп вниз с верха страницы не сворачивал приложение (Bot API 7.7+, отдельно от fullscreen)
+try { if (tg?.isVersionAtLeast?.('7.7')) tg.disableVerticalSwipes(); } catch {}
 try {
   tg?.onEvent?.('fullscreenChanged', markFs);
-  if (tg?.isVersionAtLeast?.('8.0') && ['ios', 'android'].includes(tg.platform)) {
-    tg.requestFullscreen();
-    tg.disableVerticalSwipes();  // чтобы прокрутка вниз не сворачивала приложение
-  }
+  tg?.onEvent?.('fullscreenFailed', e => console.warn('fullscreen:', e?.error));
+  if (mobile && tg.isVersionAtLeast('8.0') && !tg.isFullscreen) tg.requestFullscreen();
   markFs();
 } catch {}
 const $ = id => document.getElementById(id);
@@ -422,7 +423,8 @@ function renderSettings() {
   $('set-share-s').textContent = g ? `Отправить ссылку на ${g.id} одногруппникам` : 'Отправить ссылку одногруппникам';
   $('set-favs').innerHTML = st.favs.map(id => `<span class="fav${id === st.group ? ' sel' : ''}"><button data-fav="${esc(id)}">${esc(id)}</button><button class="x" data-unfav="${esc(id)}" aria-label="Убрать ${esc(id)}">×</button></span>`).join('')
     + (st.favs.length < MAX_FAVS ? `<button class="fav add" data-addfav>+ Добавить</button>` : '');
-  $('set-version').textContent = `${S.index.semester.title} · данные от ${S.index.generated_at.slice(8, 10)}.${S.index.generated_at.slice(5, 7)}`;
+  $('set-version').textContent = `${S.index.semester.title} · данные от ${S.index.generated_at.slice(8, 10)}.${S.index.generated_at.slice(5, 7)}`
+    + (tg?.platform && tg.platform !== 'unknown' ? ` · ${tg.platform} ${tg.version}${tg.isFullscreen ? ' · fs' : ''}` : '');
 }
 $('set-theme').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; st.theme = b.dataset.v; prefs.set('theme', st.theme); applyTheme(); haptic('sel'); renderSettings(); };
 $('set-accent').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; st.accent = b.dataset.v; prefs.set('accent', st.accent); applyTheme(); haptic('sel'); renderSettings(); };
