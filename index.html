@@ -291,8 +291,8 @@ try { tg?.ready(); tg?.expand(); } catch {}
 // на телефоне — на весь экран, без шапки Telegram; на компьютере остаётся обычное окно
 const markFs = () => document.documentElement.classList.toggle('fs', !!tg?.isFullscreen);
 const mobile = ['ios', 'android', 'android_x'].includes(tg?.platform);
-// чтобы свайп вниз с верха страницы не сворачивал приложение (Bot API 7.7+, отдельно от fullscreen)
-try { if (tg?.isVersionAtLeast?.('7.7')) tg.disableVerticalSwipes(); } catch {}
+// свайп вниз с верха страницы сворачивает приложение — это поведение Telegram по умолчанию, оставляем его
+try { if (tg?.isVersionAtLeast?.('7.7')) tg.enableVerticalSwipes(); } catch {}
 try {
   tg?.onEvent?.('fullscreenChanged', markFs);
   tg?.onEvent?.('fullscreenFailed', e => console.warn('fullscreen:', e?.error));
