@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Кампус</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!--CAMPUS:BEGIN-->
@@ -39,6 +39,7 @@
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 var(--font); }
+  html { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; }  /* без зума щипком и двойным тапом */
   body { min-height: 100vh; padding-bottom: calc(96px + var(--sb)); }
   body::before { content: ""; position: fixed; inset: 0 0 auto; height: 260px; background: radial-gradient(120% 100% at 50% 0%, var(--glow), transparent 70%); pointer-events: none; z-index: 0; opacity: .7; }
   button, input { font: inherit; color: inherit; }
@@ -302,6 +303,8 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '
 const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
 const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>';
 const USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
+// iOS не всегда слушается user-scalable=no — гасим жест щипка вручную
+for (const ev of ['gesturestart', 'gesturechange']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
 const haptic = t => { try { t === 'sel' ? tg?.HapticFeedback?.selectionChanged() : tg?.HapticFeedback?.notificationOccurred(t); } catch {} };
 
 const S = new Schedule({ baseUrl: './data' });
