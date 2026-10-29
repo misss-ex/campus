@@ -19,7 +19,12 @@
     --warn: #f3c278; --shadow: 0 10px 30px rgba(0, 0, 0, .35);
     --r-lg: 22px; --r-md: 16px; --r-sm: 12px;
     --font: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* отступы от краёв экрана: Telegram сам задаёт --tg-*-inset-* (Bot API 8.0) */
+    --sb: max(env(safe-area-inset-bottom, 0px), var(--tg-safe-area-inset-bottom, 0px));
+    --st: 0px;
   }
+  /* полноэкранный режим: шапки Telegram нет, контент ниже статус-бара и кнопок «Закрыть / ⋯» */
+  :root.fs { --st: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)); }
   :root[data-accent="lavender"] { --accent: #c4b3ff; --accent-ink: #1d1442; --accent-soft: rgba(196, 179, 255, .14); --glow: rgba(196, 179, 255, .24); --t-lecture: #c4b3ff; }
   :root[data-accent="lavender"]:not([data-mode="light"]) { --bg: #100f16; --bg-2: #15131d; --card: #1a1824; --card-2: #211e2d; --line: rgba(200, 190, 255, .09); --line-2: rgba(200, 190, 255, .18); --muted: #9d97b0; --faint: #6b6580; }
   :root[data-mode="light"] {
@@ -34,12 +39,12 @@
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 var(--font); }
-  body { min-height: 100vh; padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  body { min-height: 100vh; padding-bottom: calc(96px + var(--sb)); }
   body::before { content: ""; position: fixed; inset: 0 0 auto; height: 260px; background: radial-gradient(120% 100% at 50% 0%, var(--glow), transparent 70%); pointer-events: none; z-index: 0; opacity: .7; }
   button, input { font: inherit; color: inherit; }
   button { background: none; border: 0; padding: 0; cursor: pointer; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
-  .wrap { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .wrap { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-block: calc(12px + var(--st)) 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .num { font-variant-numeric: tabular-nums; }
 
   header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 6px 0 18px; }
@@ -138,12 +143,12 @@
   .fb-err { font-size: 13px; color: var(--warn); margin-top: 8px; }
   .btn { width: 100%; height: 48px; margin-top: 12px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 15px; }
   .btn:disabled { opacity: .5; }
-  .toast { position: fixed; left: 16px; right: 16px; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 60; max-width: 420px; margin: 0 auto; padding: 12px 16px; border-radius: 14px; background: var(--text); color: var(--bg); font-weight: 700; font-size: 14px; text-align: center; box-shadow: var(--shadow); animation: fade .2s ease; }
+  .toast { position: fixed; left: 16px; right: 16px; bottom: calc(96px + var(--sb)); z-index: 60; max-width: 420px; margin: 0 auto; padding: 12px 16px; border-radius: 14px; background: var(--text); color: var(--bg); font-weight: 700; font-size: 14px; text-align: center; box-shadow: var(--shadow); animation: fade .2s ease; }
 
   /* sheet */
   .scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); backdrop-filter: blur(2px); z-index: 40; opacity: 0; transition: opacity .2s; }
   .scrim.open { opacity: 1; }
-  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-width: 520px; margin: 0 auto; max-height: 78vh; display: flex; flex-direction: column; background: var(--bg-2); border-radius: 24px 24px 0 0; border: 1px solid var(--line-2); border-bottom: 0; box-shadow: 0 -20px 50px rgba(0, 0, 0, .35); transform: translateY(100%); transition: transform .28s cubic-bezier(.2, .8, .2, 1); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-width: 520px; margin: 0 auto; max-height: 78vh; display: flex; flex-direction: column; background: var(--bg-2); border-radius: 24px 24px 0 0; border: 1px solid var(--line-2); border-bottom: 0; box-shadow: 0 -20px 50px rgba(0, 0, 0, .35); transform: translateY(100%); transition: transform .28s cubic-bezier(.2, .8, .2, 1); padding-bottom: var(--sb); }
   .sheet.open { transform: none; }
   .sheet-head { padding: 10px max(16px, env(safe-area-inset-left, 0px)) 8px; }
   .grabber { width: 40px; height: 4px; border-radius: 4px; background: var(--line-2); margin: 0 auto 12px; }
@@ -164,7 +169,7 @@
   .g.sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
   /* tab bar */
-  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding-top: 8px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); pointer-events: none; }
+  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding-top: 8px; padding-bottom: calc(10px + var(--sb)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); pointer-events: none; }
   nav.tabs .in { pointer-events: auto; max-width: 360px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 6px; border-radius: 22px; background: color-mix(in srgb, var(--card) 82%, transparent); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); border: 1px solid var(--line-2); box-shadow: var(--shadow); }
   nav.tabs button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 16px; font-size: 11px; font-weight: 700; color: var(--muted); transition: background .2s, color .2s; }
   nav.tabs button svg { width: 21px; height: 21px; }
@@ -282,6 +287,16 @@ import { Schedule, prefs, moscowNow, formatDayTitle, formatMonth, addDays, monda
 const tg = window.Telegram?.WebApp;
 const BOT = 'stgmu_helpbot';
 try { tg?.ready(); tg?.expand(); } catch {}
+// на телефоне — на весь экран, без шапки Telegram; на компьютере остаётся обычное окно
+const markFs = () => document.documentElement.classList.toggle('fs', !!tg?.isFullscreen);
+try {
+  tg?.onEvent?.('fullscreenChanged', markFs);
+  if (tg?.isVersionAtLeast?.('8.0') && ['ios', 'android'].includes(tg.platform)) {
+    tg.requestFullscreen();
+    tg.disableVerticalSwipes();  // чтобы прокрутка вниз не сворачивала приложение
+  }
+  markFs();
+} catch {}
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
@@ -479,7 +494,7 @@ $('set-favs').onclick = async e => {
 // ---------- поделиться: ссылка открывает Mini App сразу на этой группе
 $('set-share').onclick = () => {
   const g = groupInfo(st.group); if (!g) return;
-  const url = `https://t.me/${BOT}/app?startapp=${g.slug}`;
+  const url = `https://t.me/${BOT}/app?startapp=${g.slug}&mode=fullscreen`;
   const share = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Расписание группы ${g.id}`)}`;
   haptic('sel');
   if (tg?.openTelegramLink) tg.openTelegramLink(share); else window.open(share, '_blank');
